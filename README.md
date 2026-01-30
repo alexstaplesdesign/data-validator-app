@@ -42,12 +42,17 @@ A modern, enterprise-grade CSV validation application that combines powerful com
 ### Web Dashboard
 *Beautiful, user-friendly interface for CSV validation*
 
-![Dashboard Preview](docs/dashboard-preview.png)
+![Dashboard Preview](validaiton-dashboard.png)
 
-### Validation Results
+### Validation Errors
 *Interactive error reporting with detailed explanations*
 
-![Results Preview](docs/results-preview.png)
+![Validation Errors](validation-errors.png)
+
+### Validation Success
+*Clean, successful validation results*
+
+![Validation Passed](validation-passed.png)
 
 ---
 
