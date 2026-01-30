@@ -1,0 +1,32 @@
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-ra"
+
+[build-system]
+requires = ["setuptools>=45", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "data-validator-app"
+version = "1.0.0"
+description = "Modern CSV data validation tool with CLI and web interface"
+authors = [{name = "Data Validator Team"}]
+requires-python = ">=3.10"
+dependencies = [
+    "fastapi>=0.115.0",
+    "uvicorn[standard]>=0.32.0",
+    "python-multipart>=0.0.12",
+    "jinja2>=3.1.4",
+    "aiofiles>=24.1.0",
+    "pandas>=2.2.2",
+    "pydantic>=2.10.2"
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=8.3.3",
+    "pytest-asyncio>=0.23.0"
+]
+
+[project.scripts]
+data-validator = "validator.cli:main"

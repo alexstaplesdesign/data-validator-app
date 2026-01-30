@@ -1,0 +1,677 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>📊 Data Validator - CSV Validation Made Beautiful</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        .gradient-bg {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+        .card-shadow {
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+        }
+        .upload-zone {
+            transition: all 0.3s ease;
+        }
+        .upload-zone.dragover {
+            border-color: #667eea;
+            background-color: #f8faff;
+            transform: scale(1.02);
+        }
+        .pulse-ring {
+            animation: pulse-ring 1.25s cubic-bezier(0.215, 0.61, 0.355, 1) infinite;
+        }
+        @keyframes pulse-ring {
+            0% { transform: scale(.33); }
+            40%, 50% { opacity: 0; }
+            100% { transform: scale(1.2); }
+        }
+        .fade-in {
+            animation: fadeIn 0.5s ease-in;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</head>
+<body class="bg-gray-50 min-h-screen" x-data="validatorApp()">
+    <!-- Header -->
+    <header class="gradient-bg shadow-lg">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center py-6">
+                <div class="flex items-center space-x-4">
+                    <div class="bg-white rounded-full p-3">
+                        <i class="fas fa-chart-bar text-purple-600 text-2xl"></i>
+                    </div>
+                    <div class="text-white">
+                        <h1 class="text-3xl font-bold">Data Validator</h1>
+                        <p class="text-purple-200">CSV Validation Made Beautiful</p>
+                    </div>
+                </div>
+                <div class="text-white text-right">
+                    <div class="text-sm opacity-90">Version 1.0.0</div>
+                    <div class="text-xs opacity-75">Enterprise Grade</div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <!-- What This Tool Does -->
+        <div class="bg-gradient-to-r from-blue-50 to-indigo-50 rounded-xl p-6 mb-8 border-l-4 border-blue-500">
+            <div class="flex items-start space-x-4">
+                <div class="bg-blue-500 rounded-full p-2 flex-shrink-0">
+                    <i class="fas fa-info-circle text-white"></i>
+                </div>
+                <div>
+                    <h2 class="text-xl font-bold text-gray-800 mb-2">🎯 What This Tool Does</h2>
+                    <p class="text-gray-700 mb-3">
+                        This CSV Data Validator automatically checks your customer data files for common errors and ensures they meet quality standards. 
+                        Perfect for data imports, migrations, and maintaining clean customer databases.
+                    </p>
+                    <div class="grid md:grid-cols-3 gap-4 text-sm">
+                        <div class="flex items-center space-x-2">
+                            <i class="fas fa-check-circle text-green-500"></i>
+                            <span>Validates customer data instantly</span>
+                        </div>
+                        <div class="flex items-center space-x-2">
+                            <i class="fas fa-file-csv text-blue-500"></i>
+                            <span>Generates detailed error reports</span>
+                        </div>
+                        <div class="flex items-center space-x-2">
+                            <i class="fas fa-chart-bar text-purple-500"></i>
+                            <span>Shows data quality statistics</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- How It Works -->
+        <div class="bg-white rounded-xl card-shadow p-6 mb-8">
+            <h3 class="text-lg font-bold text-gray-800 mb-4 flex items-center">
+                <i class="fas fa-cogs text-green-500 mr-2"></i>
+                How It Works - Simple 3-Step Process
+            </h3>
+            <div class="grid md:grid-cols-3 gap-6">
+                <div class="text-center">
+                    <div class="bg-blue-100 rounded-full w-12 h-12 flex items-center justify-center mx-auto mb-3">
+                        <span class="font-bold text-blue-600">1</span>
+                    </div>
+                    <h4 class="font-semibold mb-2">Upload CSV Files</h4>
+                    <p class="text-sm text-gray-600">Drag & drop or browse for your customer data files</p>
+                </div>
+                <div class="text-center">
+                    <div class="bg-green-100 rounded-full w-12 h-12 flex items-center justify-center mx-auto mb-3">
+                        <span class="font-bold text-green-600">2</span>
+                    </div>
+                    <h4 class="font-semibold mb-2">Automatic Validation</h4>
+                    <p class="text-sm text-gray-600">AI-powered checks for data quality issues</p>
+                </div>
+                <div class="text-center">
+                    <div class="bg-purple-100 rounded-full w-12 h-12 flex items-center justify-center mx-auto mb-3">
+                        <span class="font-bold text-purple-600">3</span>
+                    </div>
+                    <h4 class="font-semibold mb-2">Get Results</h4>
+                    <p class="text-sm text-gray-600">View errors, download reports, fix issues</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- CSV Requirements -->
+        <div class="bg-amber-50 rounded-xl p-6 mb-8 border-l-4 border-amber-500">
+            <h3 class="text-lg font-bold text-gray-800 mb-4 flex items-center">
+                <i class="fas fa-list-check text-amber-600 mr-2"></i>
+                📋 Your CSV File Must Have These Columns
+            </h3>
+            <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-4">
+                <div class="bg-white rounded-lg p-3 border">
+                    <h4 class="font-semibold text-blue-600 mb-1">customer_id</h4>
+                    <p class="text-xs text-gray-600">Integer, greater than 0</p>
+                    <p class="text-xs text-gray-500 mt-1">Example: 1, 2, 100</p>
+                </div>
+                <div class="bg-white rounded-lg p-3 border">
+                    <h4 class="font-semibold text-green-600 mb-1">full_name</h4>
+                    <p class="text-xs text-gray-600">2-80 characters</p>
+                    <p class="text-xs text-gray-500 mt-1">Example: John Smith</p>
+                </div>
+                <div class="bg-white rounded-lg p-3 border">
+                    <h4 class="font-semibold text-purple-600 mb-1">email</h4>
+                    <p class="text-xs text-gray-600">Valid email format</p>
+                    <p class="text-xs text-gray-500 mt-1">Example: user@domain.com</p>
+                </div>
+                <div class="bg-white rounded-lg p-3 border">
+                    <h4 class="font-semibold text-orange-600 mb-1">signup_date</h4>
+                    <p class="text-xs text-gray-600">YYYY-MM-DD, not future</p>
+                    <p class="text-xs text-gray-500 mt-1">Example: 2025-01-30</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Sample Files Section -->
+        <div class="bg-gradient-to-r from-green-50 to-emerald-50 rounded-xl p-6 mb-8 border-l-4 border-green-500">
+            <div class="flex items-start justify-between mb-4">
+                <div class="flex items-start space-x-4">
+                    <div class="bg-green-500 rounded-full p-2 flex-shrink-0">
+                        <i class="fas fa-download text-white"></i>
+                    </div>
+                    <div>
+                        <h2 class="text-xl font-bold text-gray-800 mb-2">🎯 Try Sample Files</h2>
+                        <p class="text-gray-700 mb-3">
+                            New to the tool? Download our sample CSV files to see how validation works!
+                        </p>
+                    </div>
+                </div>
+                <button 
+                    @click="loadSampleFiles()"
+                    class="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded-lg text-sm transition-colors"
+                    x-show="!samplesLoaded"
+                >
+                    <i class="fas fa-folder-open mr-2"></i>
+                    Browse Samples
+                </button>
+            </div>
+
+            <!-- Sample Files Grid -->
+            <div x-show="samplesLoaded" class="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
+                <template x-for="sample in sampleFiles" :key="sample.name">
+                    <div class="bg-white rounded-lg p-4 border hover:shadow-md transition-shadow">
+                        <div class="flex items-start justify-between mb-2">
+                            <h3 class="font-semibold text-gray-800 text-sm" x-text="sample.name"></h3>
+                            <span class="text-xs text-gray-500" x-text="formatFileSize(sample.size)"></span>
+                        </div>
+                        
+                        <p class="text-xs text-gray-600 mb-3" x-text="sample.description"></p>
+                        
+                        <details class="mb-3">
+                            <summary class="text-xs text-blue-600 cursor-pointer hover:text-blue-800">Preview</summary>
+                            <pre class="text-xs bg-gray-50 p-2 rounded mt-2 overflow-x-auto" x-text="sample.preview"></pre>
+                        </details>
+                        
+                        <div class="flex space-x-2">
+                            <button 
+                                @click="downloadSample(sample.name)"
+                                class="bg-blue-500 hover:bg-blue-600 text-white px-3 py-1 rounded text-xs transition-colors flex-1"
+                            >
+                                <i class="fas fa-download mr-1"></i>
+                                Download
+                            </button>
+                            <button 
+                                @click="useSampleFile(sample.name)"
+                                class="bg-green-500 hover:bg-green-600 text-white px-3 py-1 rounded text-xs transition-colors flex-1"
+                            >
+                                <i class="fas fa-play mr-1"></i>
+                                Try Now
+                            </button>
+                        </div>
+                    </div>
+                </template>
+            </div>
+        </div>
+
+        <!-- Upload Section -->
+        <div class="bg-white rounded-xl card-shadow p-8 mb-8">
+            <div class="text-center mb-6">
+                <h2 class="text-2xl font-bold text-gray-800 mb-2">
+                    <i class="fas fa-cloud-upload-alt text-blue-500 mr-2"></i>
+                    Upload Your CSV Files
+                </h2>
+                <p class="text-gray-600">Ready to validate? Drop your customer data files below</p>
+                <p class="text-sm text-gray-500 mt-1">
+                    💡 <strong>Tip:</strong> Try our sample files first! Check the data/ folder for examples.
+                </p>
+            </div>
+
+            <!-- Upload Zone -->
+            <div 
+                class="upload-zone border-3 border-dashed border-gray-300 rounded-xl p-12 text-center cursor-pointer transition-all"
+                @dragover.prevent="dragover = true"
+                @dragleave.prevent="dragover = false"
+                @drop.prevent="handleDrop($event)"
+                @click="$refs.fileInput.click()"
+                :class="{ 'dragover': dragover }"
+            >
+                <div class="space-y-4">
+                    <div class="relative inline-block">
+                        <div class="pulse-ring absolute inset-0 bg-blue-400 rounded-full opacity-25"></div>
+                        <i class="fas fa-file-csv text-6xl text-blue-500 relative z-10"></i>
+                    </div>
+                    
+                    <div>
+                        <h3 class="text-xl font-semibold text-gray-700 mb-2">
+                            📂 Drop CSV files here or click to browse
+                        </h3>
+                        <p class="text-gray-500 mb-2">
+                            Accepted: .csv files with customer_id, full_name, email, signup_date columns
+                        </p>
+                        <p class="text-sm text-blue-600 mb-4">
+                            🎯 <strong>New user?</strong> Try sample_perfect.csv or sample_mixed_errors.csv from the data folder!
+                        </p>
+                        <button class="bg-blue-500 hover:bg-blue-600 text-white px-6 py-3 rounded-lg font-medium transition-colors">
+                            <i class="fas fa-folder-open mr-2"></i>
+                            Browse Files
+                        </button>
+                    </div>
+                </div>
+                
+                <input 
+                    type="file" 
+                    multiple 
+                    accept=".csv" 
+                    class="hidden" 
+                    x-ref="fileInput"
+                    @change="handleFiles($event.target.files)"
+                >
+            </div>
+
+            <!-- Help Section -->
+            <div class="mt-6 bg-gray-50 rounded-lg p-4">
+                <details class="group">
+                    <summary class="flex items-center justify-between cursor-pointer text-sm font-medium text-gray-700">
+                        <span><i class="fas fa-question-circle mr-2"></i>Need help? Common validation errors explained</span>
+                        <i class="fas fa-chevron-down group-open:rotate-180 transition-transform"></i>
+                    </summary>
+                    <div class="mt-3 grid md:grid-cols-2 gap-4 text-xs">
+                        <div>
+                            <h4 class="font-semibold text-red-600 mb-1">❌ Common Errors:</h4>
+                            <ul class="space-y-1 text-gray-600">
+                                <li>• Customer ID = 0 or negative</li>
+                                <li>• Missing @ in email address</li>
+                                <li>• Name too short (less than 2 chars)</li>
+                                <li>• Future signup dates</li>
+                                <li>• Invalid date format</li>
+                            </ul>
+                        </div>
+                        <div>
+                            <h4 class="font-semibold text-green-600 mb-1">✅ Valid Examples:</h4>
+                            <ul class="space-y-1 text-gray-600">
+                                <li>• customer_id: 1, 25, 1000</li>
+                                <li>• email: user@domain.com</li>
+                                <li>• full_name: Alice Johnson</li>
+                                <li>• signup_date: 2025-01-30</li>
+                            </ul>
+                        </div>
+                    </div>
+                </details>
+            </div>
+
+            <!-- Selected Files -->
+            <div x-show="selectedFiles.length > 0" class="mt-6 fade-in">
+                <h3 class="font-semibold text-gray-700 mb-3">
+                    <i class="fas fa-list mr-2"></i>
+                    Selected Files (<span x-text="selectedFiles.length"></span>)
+                </h3>
+                <div class="grid gap-3">
+                    <template x-for="(file, index) in selectedFiles" :key="index">
+                        <div class="flex items-center justify-between bg-gray-50 rounded-lg p-3">
+                            <div class="flex items-center space-x-3">
+                                <i class="fas fa-file-csv text-green-500"></i>
+                                <span x-text="file.name" class="font-medium"></span>
+                                <span x-text="formatFileSize(file.size)" class="text-sm text-gray-500"></span>
+                            </div>
+                            <button 
+                                @click="removeFile(index)"
+                                class="text-red-500 hover:text-red-700 transition-colors"
+                            >
+                                <i class="fas fa-times"></i>
+                            </button>
+                        </div>
+                    </template>
+                </div>
+
+                <!-- Validate Button -->
+                <div class="mt-6 text-center">
+                    <button 
+                        @click="validateFiles()"
+                        :disabled="isValidating"
+                        class="bg-green-500 hover:bg-green-600 disabled:bg-gray-400 text-white px-8 py-4 rounded-lg font-bold text-lg transition-colors"
+                    >
+                        <i class="fas fa-check-circle mr-2" x-show="!isValidating"></i>
+                        <i class="fas fa-spinner fa-spin mr-2" x-show="isValidating"></i>
+                        <span x-text="isValidating ? 'Validating...' : 'Validate Files'"></span>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Results Section -->
+        <div x-show="validationResults" class="fade-in">
+            <!-- Summary Cards -->
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
+                <div class="bg-white rounded-xl card-shadow p-6">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <p class="text-sm font-medium text-gray-600">Total Files</p>
+                            <p class="text-3xl font-bold text-blue-600" x-text="summary.total_files || 0"></p>
+                        </div>
+                        <div class="bg-blue-100 rounded-full p-3">
+                            <i class="fas fa-file text-blue-600"></i>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-white rounded-xl card-shadow p-6">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <p class="text-sm font-medium text-gray-600">Total Rows</p>
+                            <p class="text-3xl font-bold text-green-600" x-text="summary.total_rows || 0"></p>
+                        </div>
+                        <div class="bg-green-100 rounded-full p-3">
+                            <i class="fas fa-table text-green-600"></i>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-white rounded-xl card-shadow p-6">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <p class="text-sm font-medium text-gray-600">Invalid Rows</p>
+                            <p class="text-3xl font-bold text-orange-600" x-text="summary.total_invalid_rows || 0"></p>
+                        </div>
+                        <div class="bg-orange-100 rounded-full p-3">
+                            <i class="fas fa-exclamation-triangle text-orange-600"></i>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-white rounded-xl card-shadow p-6">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <p class="text-sm font-medium text-gray-600">Total Errors</p>
+                            <p class="text-3xl font-bold text-red-600" x-text="summary.total_validation_errors || 0"></p>
+                        </div>
+                        <div class="bg-red-100 rounded-full p-3">
+                            <i class="fas fa-times-circle text-red-600"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Validation Status -->
+            <div class="bg-white rounded-xl card-shadow p-6 mb-8">
+                <div x-show="summary.has_errors" class="flex items-start space-x-3 text-red-600">
+                    <i class="fas fa-times-circle text-2xl flex-shrink-0 mt-1"></i>
+                    <div>
+                        <h3 class="text-lg font-bold">❌ Validation Failed</h3>
+                        <p class="mb-2">Found <span x-text="summary.total_validation_errors"></span> errors in your CSV files. Don't worry - we'll help you fix them!</p>
+                        <div class="bg-red-50 rounded-lg p-3 text-sm">
+                            <p class="font-medium mb-1">🔧 Next Steps:</p>
+                            <ul class="list-disc list-inside space-y-1 text-red-700">
+                                <li>Review the error details in the tables below</li>
+                                <li>Fix the issues in your CSV files</li>
+                                <li>Re-upload the corrected files</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                <div x-show="!summary.has_errors && validationResults" class="flex items-start space-x-3 text-green-600">
+                    <i class="fas fa-check-circle text-2xl flex-shrink-0 mt-1"></i>
+                    <div>
+                        <h3 class="text-lg font-bold">✅ Validation Passed</h3>
+                        <p class="mb-2">Congratulations! All files passed validation successfully. Your data is clean and ready to use.</p>
+                        <div class="bg-green-50 rounded-lg p-3 text-sm">
+                            <p class="font-medium mb-1">🎉 What this means:</p>
+                            <ul class="list-disc list-inside space-y-1 text-green-700">
+                                <li>All customer IDs are valid positive integers</li>
+                                <li>All names are properly formatted (2-80 characters)</li>
+                                <li>All email addresses have correct format</li>
+                                <li>All signup dates are valid and not in the future</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- File Results -->
+            <div class="space-y-6">
+                <template x-for="(result, index) in validationResults" :key="index">
+                    <div class="bg-white rounded-xl card-shadow overflow-hidden">
+                        <div class="p-6 border-b">
+                            <div class="flex items-center justify-between">
+                                <h3 class="text-xl font-bold text-gray-800 flex items-center">
+                                    <i class="fas fa-file-csv text-blue-500 mr-3"></i>
+                                    <span x-text="result.filename"></span>
+                                </h3>
+                                <div class="flex items-center space-x-4">
+                                    <span class="text-sm text-gray-600">
+                                        <i class="fas fa-table mr-1"></i>
+                                        <span x-text="result.total_rows"></span> rows
+                                    </span>
+                                    <span x-show="result.validation_errors > 0" class="bg-red-100 text-red-800 px-3 py-1 rounded-full text-sm font-medium">
+                                        <i class="fas fa-exclamation-triangle mr-1"></i>
+                                        <span x-text="result.validation_errors"></span> errors
+                                    </span>
+                                    <span x-show="result.validation_errors === 0" class="bg-green-100 text-green-800 px-3 py-1 rounded-full text-sm font-medium">
+                                        <i class="fas fa-check mr-1"></i>
+                                        Valid
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Errors Table -->
+                        <div x-show="result.errors && result.errors.length > 0" class="overflow-x-auto">
+                            <table class="w-full">
+                                <thead class="bg-gray-50">
+                                    <tr>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Row</th>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Field</th>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Error</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="bg-white divide-y divide-gray-200">
+                                    <template x-for="(error, errorIndex) in result.errors" :key="errorIndex">
+                                        <tr class="hover:bg-gray-50">
+                                            <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900" x-text="error.row_number"></td>
+                                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                                <code class="bg-gray-100 px-2 py-1 rounded text-xs" x-text="error.field"></code>
+                                            </td>
+                                            <td class="px-6 py-4 text-sm text-red-600" x-text="error.message"></td>
+                                        </tr>
+                                    </template>
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <!-- No Errors Message -->
+                        <div x-show="!result.errors || result.errors.length === 0" class="p-6 text-center text-green-600">
+                            <i class="fas fa-check-circle text-2xl mb-2"></i>
+                            <p class="font-medium">No validation errors found in this file!</p>
+                        </div>
+                    </div>
+                </template>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer with additional info -->
+    <footer class="bg-gray-100 py-8 mt-12">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid md:grid-cols-3 gap-8">
+                <div>
+                    <h3 class="font-bold text-gray-800 mb-3">🚀 About This Tool</h3>
+                    <p class="text-sm text-gray-600 mb-2">
+                        Professional CSV data validation tool built for data quality assurance. 
+                        Designed for businesses, developers, and data teams.
+                    </p>
+                    <p class="text-xs text-gray-500">Version 1.0.0 • Enterprise Grade</p>
+                </div>
+                <div>
+                    <h3 class="font-bold text-gray-800 mb-3">💡 Quick Tips</h3>
+                    <ul class="text-sm text-gray-600 space-y-1">
+                        <li>• Start with sample files to learn how it works</li>
+                        <li>• Check file format before uploading</li>
+                        <li>• Use consistent date format (YYYY-MM-DD)</li>
+                        <li>• Ensure all required columns are present</li>
+                    </ul>
+                </div>
+                <div>
+                    <h3 class="font-bold text-gray-800 mb-3">🔧 Need Help?</h3>
+                    <div class="text-sm text-gray-600 space-y-1">
+                        <p>• Sample files are in the data/ folder</p>
+                        <p>• CLI version available for automation</p>
+                        <p>• Error reports saved automatically</p>
+                        <p>• Contact your system administrator for support</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        function validatorApp() {
+            return {
+                selectedFiles: [],
+                dragover: false,
+                isValidating: false,
+                validationResults: null,
+                summary: {},
+                samplesLoaded: false,
+                sampleFiles: [],
+
+                async loadSampleFiles() {
+                    try {
+                        const response = await fetch('/api/samples');
+                        if (!response.ok) {
+                            throw new Error(`HTTP error! status: ${response.status}`);
+                        }
+                        const data = await response.json();
+                        this.sampleFiles = data.samples;
+                        this.samplesLoaded = true;
+                    } catch (error) {
+                        console.error('Failed to load samples:', error);
+                        alert('Failed to load sample files');
+                    }
+                },
+
+                async downloadSample(filename) {
+                    try {
+                        const response = await fetch(`/api/samples/download/${filename}`);
+                        if (!response.ok) {
+                            throw new Error(`HTTP error! status: ${response.status}`);
+                        }
+                        
+                        const blob = await response.blob();
+                        const url = window.URL.createObjectURL(blob);
+                        const a = document.createElement('a');
+                        a.href = url;
+                        a.download = filename;
+                        document.body.appendChild(a);
+                        a.click();
+                        document.body.removeChild(a);
+                        window.URL.revokeObjectURL(url);
+                    } catch (error) {
+                        console.error('Download failed:', error);
+                        alert('Failed to download sample file');
+                    }
+                },
+
+                async useSampleFile(filename) {
+                    try {
+                        const response = await fetch(`/api/samples/download/${filename}`);
+                        if (!response.ok) {
+                            throw new Error(`HTTP error! status: ${response.status}`);
+                        }
+                        
+                        const blob = await response.blob();
+                        const file = new File([blob], filename, { type: 'text/csv' });
+                        this.addFiles([file]);
+                        
+                        // Scroll to upload section
+                        setTimeout(() => {
+                            document.querySelector('[x-show="selectedFiles.length > 0"]').scrollIntoView({ 
+                                behavior: 'smooth' 
+                            });
+                        }, 100);
+                    } catch (error) {
+                        console.error('Failed to use sample file:', error);
+                        alert('Failed to load sample file');
+                    }
+                },
+
+                handleDrop(e) {
+                    this.dragover = false;
+                    const files = Array.from(e.dataTransfer.files).filter(file => file.name.endsWith('.csv'));
+                    this.addFiles(files);
+                },
+
+                handleFiles(fileList) {
+                    const files = Array.from(fileList).filter(file => file.name.endsWith('.csv'));
+                    this.addFiles(files);
+                },
+
+                addFiles(files) {
+                    // Avoid duplicates
+                    files.forEach(file => {
+                        if (!this.selectedFiles.some(f => f.name === file.name && f.size === file.size)) {
+                            this.selectedFiles.push(file);
+                        }
+                    });
+                },
+
+                removeFile(index) {
+                    this.selectedFiles.splice(index, 1);
+                },
+
+                formatFileSize(bytes) {
+                    if (bytes === 0) return '0 B';
+                    const k = 1024;
+                    const sizes = ['B', 'KB', 'MB'];
+                    const i = Math.floor(Math.log(bytes) / Math.log(k));
+                    return parseFloat((bytes / Math.pow(k, i)).toFixed(1)) + ' ' + sizes[i];
+                },
+
+                async validateFiles() {
+                    if (this.selectedFiles.length === 0) {
+                        alert('Please select files to validate');
+                        return;
+                    }
+
+                    this.isValidating = true;
+                    this.validationResults = null;
+
+                    try {
+                        const formData = new FormData();
+                        this.selectedFiles.forEach(file => {
+                            formData.append('files', file);
+                        });
+
+                        const response = await fetch('/api/validate', {
+                            method: 'POST',
+                            body: formData
+                        });
+
+                        if (!response.ok) {
+                            throw new Error(`HTTP error! status: ${response.status}`);
+                        }
+
+                        const data = await response.json();
+                        this.validationResults = data.results;
+                        this.summary = data.summary;
+
+                        // Scroll to results
+                        setTimeout(() => {
+                            document.querySelector('[x-show="validationResults"]').scrollIntoView({ 
+                                behavior: 'smooth',
+                                block: 'start'
+                            });
+                        }, 100);
+
+                    } catch (error) {
+                        console.error('Validation error:', error);
+                        alert('Validation failed: ' + error.message);
+                    } finally {
+                        this.isValidating = false;
+                    }
+                }
+            };
+        }
+    </script>
+</body>
+</html>
