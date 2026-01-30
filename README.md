@@ -362,7 +362,7 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 - 🐛 **Bug Reports**: [Open an issue](https://github.com/yourusername/data-validator-app/issues)
 - 💡 **Feature Requests**: [Start a discussion](https://github.com/yourusername/data-validator-app/discussions)
-- 📧 **Email**: your.email@domain.com
+- 📧 **Email**: alex@pixelperfect-designs.com
 
 ---
 
@@ -370,6 +370,6 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 **⭐ If you found this project helpful, please give it a star! ⭐**
 
-Made with ❤️ by [Your Name](https://github.com/yourusername)
+Made with ❤️ by Alex Staples
 
 </div>
